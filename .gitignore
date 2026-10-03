@@ -1,0 +1,9 @@
+data/raw/*
+!data/raw/.gitkeep
+data/processed/*.parquet
+mlruns/
+mlflow.db
+__pycache__/
+.venv/
+.pytest_cache/
+.ruff_cache/
