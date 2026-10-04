@@ -50,3 +50,11 @@ docker build -t promo-engine . && docker run -p 8000:8000 promo-engine
 - Observational data: θ is causal only under unconfoundedness given the controls.
 - No cost data: margin assumed at 30% of shelf price; vendor funding assumed at 50% of the discount.
 - Baseline is a rolling non-promo mean; no-back-to-back is a proxy for pull-forward; cannibalization is handled by a category cap, not cross-elasticities.
+
+## License & citation
+Released under the [MIT License](LICENSE). You're welcome to use and adapt it; please keep the copyright
+notice and credit the original by linking to this repository:
+
+> Samina Yasmin (2026). *Promo Optimization Engine*. https://github.com/Saminay786/promo-optimization-engine
+
+GitHub's **"Cite this repository"** button (from [CITATION.cff](CITATION.cff)) gives the same citation in APA and BibTeX.

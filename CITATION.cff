@@ -1,0 +1,20 @@
+cff-version: 1.2.0
+message: "If you use or adapt this project, please cite it and link to the repository."
+title: "Promo Optimization Engine"
+abstract: >-
+  Causal promo uplift estimation (Double ML) feeding a 0-1 integer program
+  (OR-Tools CP-SAT) that builds a promo calendar maximising incremental margin,
+  served as a FastAPI service. Built on dunnhumby "The Complete Journey".
+authors:
+  - given-names: Samina
+    family-names: Yasmin
+repository-code: "https://github.com/Saminay786/promo-optimization-engine"
+url: "https://github.com/Saminay786/promo-optimization-engine"
+license: MIT
+date-released: "2026-10-04"
+keywords:
+  - promotion optimization
+  - causal inference
+  - double machine learning
+  - integer programming
+  - retail
