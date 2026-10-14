@@ -1,0 +1,40 @@
+{
+ "max_rhat": 1.008,
+ "min_ess_bulk": 611,
+ "divergences": 0,
+ "n_draws": 4000,
+ "fit": {
+  "BAG SNACKS": {
+   "r2": 0.45,
+   "mape": 0.059
+  },
+  "BAKED BREAD/BUNS/ROLLS": {
+   "r2": 0.644,
+   "mape": 0.044
+  },
+  "CHEESE": {
+   "r2": 0.596,
+   "mape": 0.062
+  },
+  "COLD CEREAL": {
+   "r2": 0.454,
+   "mape": 0.081
+  },
+  "DELI MEATS": {
+   "r2": 0.206,
+   "mape": 0.085
+  },
+  "FROZEN PIZZA": {
+   "r2": 0.503,
+   "mape": 0.103
+  },
+  "FRZN MEAT/MEAT DINNERS": {
+   "r2": 0.442,
+   "mape": 0.11
+  },
+  "SOFT DRINKS": {
+   "r2": 0.644,
+   "mape": 0.088
+  }
+ }
+}

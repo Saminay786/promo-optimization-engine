@@ -1,0 +1,6 @@
+# Optional extension: Bayesian MMM (src/mmm_data.py, src/mmm.py)
+# pip install -r requirements.txt -r requirements-mmm.txt
+pymc-marketing>=1.2
+nutpie>=0.16
+h5netcdf>=1.3         # writer for saving the fitted model (NetCDF)
+h5py>=3.10            # HDF5 backend that h5netcdf needs

@@ -46,10 +46,45 @@ docker build -t promo-engine . && docker run -p 8000:8000 promo-engine
 | Share of promo volume that was non-incremental | 43.8% |
 | Incremental margin: MIP vs heuristic (same budget) | $719 vs $60 (8 weeks, $5k budget, 10 slots/week; MIP spends 37% less) |
 
+## Extension: Bayesian marketing-mix model (MMM)
+A top-down complement to the product-level DML: weekly **category** sales explained by three promo levers
+(discount rate, mailer placements, display placements) with **adstock** (carryover) and **saturation**
+(diminishing returns), fitted with PyMC-Marketing across 8 categories in one model.
+
+| Stage | File | What it does |
+|---|---|---|
+| M0 | `src/mmm_data.py` | category × week dataset (weeks 20–101, the 115 stores covered by `causal_data`) |
+| M1 | `src/mmm.py` | Bayesian MMM: per-category lever strength; carryover and saturation shape shared across categories |
+| M2 | `src/mmm_report.py` | contribution decomposition, ROI per lever, budget reallocation scenario, cross-check vs DML |
+
+```bash
+pip install -r requirements-mmm.txt   # Python >= 3.12
+python -m src.mmm_data && python -m src.mmm && python -m src.mmm_report
+```
+
+**Results** (94% credible intervals; levers measured above each category's quietest week):
+
+| Finding | Value |
+|---|---|
+| Convergence | 0 divergences, max r-hat 1.008, min ESS 611 |
+| In-sample fit | R² 0.44–0.64 in 7 of 8 categories (deli meats 0.21); MAPE 4–11% |
+| Discount share of units | 23% soft drinks, 19% frozen pizza; 4–9% elsewhere |
+| Discount ROI ($ margin per $ retailer discount) | below 1 in 7 of 8 categories (e.g. soft drinks 0.69 [0.50–0.89]); only frozen pizza > 1 (1.24 [0.71–1.75]) |
+| Display break-even cost | $0.005–0.08 per placement (product × store × week); mailer ~$0.001–0.002 |
+| Reallocation (20% of discount spend → display) | frozen meat dinners improves with ≥ 81% probability up to $0.05/placement; frozen pizza loses at ≥ $0.03 |
+| MMM vs DML discount effect (4 overlapping categories) | same ordering; MMM ≈ 45–55% of DML (bread, cheese, soft drinks), consistent with within-category cannibalisation |
+
+Data issues found and handled: `causal_data.csv` only lists promoted product-store-weeks (so shares of its rows
+measure promo *mix*, not amount; levers use placement counts); household recruitment inflates weeks 1–19;
+discount dollars track sales mechanically (discount *rate* is used); levers are never zero (measured above
+each category's minimum, so base vs promo is identifiable).
+
 ## Limitations
 - Observational data: θ is causal only under unconfoundedness given the controls.
 - No cost data: margin assumed at 30% of shelf price; vendor funding assumed at 50% of the discount.
 - Baseline is a rolling non-promo mean; no-back-to-back is a proxy for pull-forward; cannibalization is handled by a category cap, not cross-elasticities.
+- The MMM cross-check suggests product-level θ is roughly 2× the category-level gain, so the optimizer's incremental margin is likely overstated; scaling θ by a category-level factor or modelling cross-effects is the next step.
+- MMM: 82 weekly observations per category; mailer and display are correlated (0.6–0.7), so their split is uncertain; mailer/display have no cost data (break-even costs reported instead); standard adstock cannot represent the negative carryover of pull-forward.
 
 ## License & citation
 Released under the [MIT License](LICENSE). You're welcome to use and adapt it; please keep the copyright
