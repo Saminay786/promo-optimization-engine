@@ -1,0 +1,23 @@
+{
+ "eligible_stores": 84,
+ "false_positive_rate": {
+  "4w difference in means": 0.042,
+  "4w CUPED": 0.05,
+  "8w difference in means": 0.037,
+  "8w CUPED": 0.055,
+  "12w difference in means": 0.056,
+  "12w CUPED": 0.049
+ },
+ "mde": {
+  "4w CUPED": 0.1475,
+  "4w difference in means": null,
+  "8w CUPED": 0.1337,
+  "8w difference in means": null,
+  "12w CUPED": 0.1234,
+  "12w difference in means": null
+ },
+ "predicted_lift": 0.0317,
+ "predicted_lift_mmm_adjusted": 0.0159,
+ "stores_needed_8w_cuped": 1492,
+ "stores_needed_8w_cuped_mmm_adjusted": 5968
+}

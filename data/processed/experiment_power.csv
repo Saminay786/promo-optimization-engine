@@ -1,0 +1,55 @@
+test_weeks,method,lift,power
+4,difference in means,0.0,0.042
+4,difference in means,0.01,0.063
+4,difference in means,0.02,0.057
+4,difference in means,0.03,0.051
+4,difference in means,0.04,0.062
+4,difference in means,0.06,0.103
+4,difference in means,0.08,0.14
+4,difference in means,0.1,0.197
+4,difference in means,0.15,0.343
+4,CUPED,0.0,0.05
+4,CUPED,0.01,0.05
+4,CUPED,0.02,0.066
+4,CUPED,0.03,0.087
+4,CUPED,0.04,0.113
+4,CUPED,0.06,0.227
+4,CUPED,0.08,0.352
+4,CUPED,0.1,0.519
+4,CUPED,0.15,0.815
+8,difference in means,0.0,0.037
+8,difference in means,0.01,0.042
+8,difference in means,0.02,0.056
+8,difference in means,0.03,0.062
+8,difference in means,0.04,0.085
+8,difference in means,0.06,0.121
+8,difference in means,0.08,0.159
+8,difference in means,0.1,0.186
+8,difference in means,0.15,0.395
+8,CUPED,0.0,0.055
+8,CUPED,0.01,0.061
+8,CUPED,0.02,0.079
+8,CUPED,0.03,0.104
+8,CUPED,0.04,0.157
+8,CUPED,0.06,0.293
+8,CUPED,0.08,0.465
+8,CUPED,0.1,0.63
+8,CUPED,0.15,0.882
+12,difference in means,0.0,0.056
+12,difference in means,0.01,0.054
+12,difference in means,0.02,0.061
+12,difference in means,0.03,0.058
+12,difference in means,0.04,0.079
+12,difference in means,0.06,0.106
+12,difference in means,0.08,0.139
+12,difference in means,0.1,0.218
+12,difference in means,0.15,0.401
+12,CUPED,0.0,0.049
+12,CUPED,0.01,0.056
+12,CUPED,0.02,0.076
+12,CUPED,0.03,0.128
+12,CUPED,0.04,0.159
+12,CUPED,0.06,0.332
+12,CUPED,0.08,0.514
+12,CUPED,0.1,0.689
+12,CUPED,0.15,0.926

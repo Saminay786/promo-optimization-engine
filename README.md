@@ -11,6 +11,7 @@ served as a FastAPI service in Docker with CI.
 | 1 | `src/uplift.py` | naive vs **Double ML** (EconML `LinearDML`, LightGBM nuisances, 5-fold cross-fitting) vs placebo; per-category uplift θ; MLflow tracking |
 | 2 | `src/optimizer.py` | promo calendar as a 0-1 IP (budget, weekly slots, frequency, category cap, no back-to-back); benchmarked against a "deepest discount on top sellers" heuristic |
 | 3 | `src/api.py` | `POST /optimize` → promo calendar + expected incremental margin |
+| 4 | `src/experiment.py` | store-level A/B test design for the calendar: A/A validity check, power simulation on real store-weeks, CUPED, minimum detectable effect |
 
 ## Data
 This project uses **"The Complete Journey"** by dunnhumby: two years of household-level
@@ -29,6 +30,7 @@ python scripts/make_fake_data.py      # optional: test everything on fake data f
 python -m src.panel                   # needs data/raw/*.csv
 python -m src.uplift
 python -m src.optimizer
+python -m src.experiment              # optional: A/B test design (~1 min)
 uvicorn src.api:app --reload          # open http://127.0.0.1:8000/docs
 pytest -q
 docker build -t promo-engine . && docker run -p 8000:8000 promo-engine
@@ -72,18 +74,40 @@ python -m src.mmm_data && python -m src.mmm && python -m src.mmm_report
 | Discount ROI ($ margin per $ retailer discount) | below 1 in 7 of 8 categories (e.g. soft drinks 0.69 [0.50–0.89]); only frozen pizza > 1 (1.24 [0.71–1.75]) |
 | Display break-even cost | $0.005–0.08 per placement (product × store × week); mailer ~$0.001–0.002 |
 | Reallocation (20% of discount spend → display) | frozen meat dinners improves with ≥ 81% probability up to $0.05/placement; frozen pizza loses at ≥ $0.03 |
-| MMM vs DML discount effect (4 overlapping categories) | same ordering; MMM ≈ 45–55% of DML (bread, cheese, soft drinks), consistent with within-category cannibalisation |
+| MMM vs DML discount effect (4 overlapping categories) | same ordering; MMM ≈ 43–55% of DML (bread, cheese, soft drinks; deli meats 19%), consistent with within-category cannibalisation |
 
 Data issues found and handled: `causal_data.csv` only lists promoted product-store-weeks (so shares of its rows
 measure promo *mix*, not amount; levers use placement counts); household recruitment inflates weeks 1–19;
 discount dollars track sales mechanically (discount *rate* is used); levers are never zero (measured above
 each category's minimum, so base vs promo is identifiable).
 
+## Extension: how would we test it? (A/B test design)
+The optimiser *predicts* a gain; a retailer would want to *see* it before rolling out. Proposed test:
+randomise stores 50/50, treatment stores run the optimised calendar, control stores keep current practice;
+metric = weekly promo margin per store on the planned products. Stores (not households) are the unit because
+a promo calendar applies to everyone shopping in a store. The data has 582 stores; the planned products sell in 115,
+of which 84 average ≥ $15 weekly margin. Using their real store-week history (weeks 20–101), 1,000 simulated tests per scenario:
+
+| Question | Answer |
+|---|---|
+| Is the analysis valid? (A/A tests, no effect injected) | false-positive rate 3.7–5.6% vs 5% target |
+| Does CUPED (pre-period adjustment) help? | yes: at a 10% true lift, power 63% vs 19% without it (8-week test) |
+| Minimum detectable effect, 80% power (CUPED) | 14.8% (4 weeks), **13.4% (8 weeks)**, 12.3% (12 weeks); never reached without CUPED |
+| Optimiser's predicted gain vs current practice | 3.2% of baseline margin (≈1.6% if the MMM's cannibalisation estimate holds) |
+| Power to detect 3% with 84 stores, 8 weeks | ~10%: a test this size would almost always come back "no significant effect" |
+| Stores needed to detect it (8 weeks, CUPED) | ~1,500 (≈6,000 at the MMM-adjusted 1.6%) |
+
+Takeaway: the predicted gain is too small to confirm with a store test of this size, so a "no effect" result
+would not mean the calendar failed. Note the panel only records ~2,500 households (~100 per store), so real stores
+have far more customers and much lower relative noise; the *method* transfers, the store count does not.
+Options: test on full-store sales, run longer, pool more categories into the metric, or use a switchback design.
+
 ## Limitations
 - Observational data: θ is causal only under unconfoundedness given the controls.
 - No cost data: margin assumed at 30% of shelf price; vendor funding assumed at 50% of the discount.
 - Baseline is a rolling non-promo mean; no-back-to-back is a proxy for pull-forward; cannibalization is handled by a category cap, not cross-elasticities.
 - The MMM cross-check suggests product-level θ is roughly 2× the category-level gain, so the optimizer's incremental margin is likely overstated; scaling θ by a category-level factor or modelling cross-effects is the next step.
+- Experiment design: lift is injected as a uniform % on the whole store metric (a real calendar changes only some product-weeks); panel stores see only panel households' purchases.
 - MMM: 82 weekly observations per category; mailer and display are correlated (0.6–0.7), so their split is uncertain; mailer/display have no cost data (break-even costs reported instead); standard adstock cannot represent the negative carryover of pull-forward.
 
 ## License & citation
